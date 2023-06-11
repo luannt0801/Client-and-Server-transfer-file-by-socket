@@ -7,48 +7,65 @@ HOST = '127.0.0.1'
 PORT = 5050
 ADDR =(HOST, PORT)
 
-def receive_file(conn, filename):
-    with open(filename, 'wb') as file:
-        data = conn.recv(1024)
-        while data:
-            file.write(data)
-            data = conn.recv(1024)
+class Client:
+    def __init__(self):
+        self.server_address = None
+    
+    def connect(self):
+        self.server_address = ADDRESS
+        client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        client_socket.connect(self.server_address)
 
-def start_client(host, port):
-    client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    client_socket.connect((host, port))
-    print(f"Connected to server: {host}:{port}")
+        print("Connected to server.")
 
-    file_list = client_socket.recv(1024).decode()
-    print(f"Available files and directories:\n{file_list}")
+        while True:
+            command = input("Enter command: ")
+            client_socket.send(command.encode())
 
-    request = input("Enter 'download' to download a file, 'upload' to upload a file, or 'exit' to quit: ")
-    client_socket.send(request.encode())
+            if command == 'download':
+                file_list = client_socket.recv(1024).decode()
+                print("Available files:")
+                print(file_list)
 
-    if request == 'download':
-        filename = input("Enter the filename to download: ")
-        client_socket.send(filename.encode())
-        response = client_socket.recv(1024).decode()
-        if response == 'OK':
-            receive_file(client_socket, filename)
-            print(f"File '{filename}' downloaded successfully.")
-        else:
-            print("File not found on the server.")
-    elif request == 'upload':
-        filename = input("Enter the filename to upload: ")
-        client_socket.send(filename.encode())
-        response = client_socket.recv(1024).decode()
-        if response == 'OK':
-            with open(filename, 'rb') as file:
-                data = file.read(1024)
-                while data:
-                    client_socket.send(data)
-                    data = file.read(1024)
-            print(f"File '{filename}' uploaded successfully.")
-        else:
-            print("Error in uploading the file.")
+                filename = input("Enter filename to download: ")
+                client_socket.send(filename.encode())
 
-    client_socket.close()
+                response = client_socket.recv(65535).decode()
+                if response == 'OK':
+                    file_path = './downloads/' + filename
+                    with open(file_path, 'wb') as file:
+                        while True:
+                            data = client_socket.recv(65535)
+                            if not data:
+                                break
+                            file.write(data)
+                    print("Download complete.")
+                else:
+                    print("File not found.")
 
-if __name__ == "__main__":
-    start_client(HOST, PORT)
+            elif command == 'upload':
+                file_list = client_socket.recv(1024).decode()
+                print("Available files:")
+                print(file_list)
+
+                filename = input("Enter filename to upload: ")
+                client_socket.send(filename.encode())
+
+                response = client_socket.recv(1024).decode()
+                if response == 'OK':
+                    file_path = './uploads/' + filename
+                    with open(file_path, 'rb') as file:
+                        while True:
+                            data = file.read(1024)
+                            if not data:
+                                break
+                            client_socket.send(data.decode())
+                    print("Upload complete.")
+                else:
+                    print("Server rejected the upload.")
+
+        client_socket.close()
+
+if __name__ == '__main__':
+    client = Client()
+    client.connect()
