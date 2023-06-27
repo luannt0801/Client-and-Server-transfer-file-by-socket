@@ -15,7 +15,7 @@ python3 Client.py
 ```
 
 ## Communication between client and server
-![alt](https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.javatpoint.com%2Fsocket-programming&psig=AOvVaw3qlTE8e5ztuXHX9fT8qEjl&ust=1686582110867000&source=images&cd=vfe&ved=0CBEQjRxqFwoTCKjc7o6-u_8CFQAAAAAdAAAAABAE)
+![alt](pic/client-server-1.png)
 
 
 **SERVER**
@@ -30,7 +30,17 @@ python3 Client.py
 2. Send command
 3. Receive data and save - not done
 
-####***Note**
+**Protocol**
+
+|Offset|Byte+0|Byte+1|Byte+2|Byte+3|
+|------|------|------|------|------|
+|Byte 0-3|Content Type| 
+|Byte 4-7|
+|Byte 8-m|
+
+
+
+#### ***Note**
 Các việc cần làm:
 + Thêm các lệnh để tìm file:
     Command 'cd' để mở một thư mục
@@ -38,3 +48,6 @@ Các việc cần làm:
     ...
 + Mã hoá cho từng kết nối giữa Client và Server
     Sử dụng OPEN VPN hoặc OPEN SSL/TLS
+
+***Link***
+https://www.youtube.com/watch?v=Ah3iz3pKljU
