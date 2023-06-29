@@ -33,12 +33,12 @@ def handle_client(server: socket.socket,):
     # start
     while True:
         #list file
-        package = server.recv(1024).decode()
-        print(package)
-        command, filename = package.split()
+        request = server.recv(1024).decode()
+        print(request)
+        command, filename = request.split()
         # list
-        if package.startswith("list"):
-            folder_path = package.split("list")[1].strip()
+        if request.startswith("list"):
+            folder_path = request.split("list")[1].strip()
             print(folder_path)
             files = os.listdir(folder_path)
             file_list = ' '.join(files)
