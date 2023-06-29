@@ -5,18 +5,22 @@
 Server:
 ```
 cd server/
-python3 server.py
+sudo python3 server.py
 ```
 
 Các Clients:
 ```
-cd client/
-python3 Client.py
+cd clients/
+sudo python3 client.py
 ```
 
 ## Communication between client and server
+
 ![alt](pic/client-server-1.png)
 
+## Flow data
+
+![alt](pic/Flowdata_s_to_c.png)
 
 **SERVER**
 1. Connect to client by socket (socket, threading)
@@ -32,11 +36,11 @@ python3 Client.py
 
 **Protocol**
 
-|Offset|Byte+0|Byte+1|Byte+2|Byte+3|
-|------|------|------|------|------|
-|Byte 0-3|Content Type| 
-|Byte 4-7|
-|Byte 8-m|
+|Byte+0|Byte+1|Byte+2|Byte+3|
+|------|------|------|------|
+|Content Type|ID|Check|Payload|
+
+
 
 
 
