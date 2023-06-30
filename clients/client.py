@@ -31,7 +31,7 @@ if __name__ == '__main__':
     while True:
 
         # command input
-        command = input("Enter command: ")
+        command = input("Enter command >>")
         if not command:
             break
         else:

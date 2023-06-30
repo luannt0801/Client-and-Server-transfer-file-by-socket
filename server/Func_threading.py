@@ -22,7 +22,7 @@ def handle_client(server: socket.socket,):
     # secure_socket = context.wrap_socket(server, server_side=True)
 
     # welcome
-    msg0 = "--- Welcome to server ---\nDownload/Upload + file name | cd & cd .. to move"
+    msg0 = "--- Welcome to server ---\nDownload/Upload + file name | cd & cd .. to move\nserver:"
     server.send(msg0.encode())
     start_msg = server.recv(1024)
     # time.sleep(5)
