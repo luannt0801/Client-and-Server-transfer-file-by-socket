@@ -65,5 +65,5 @@ if __name__ == '__main__':
                             if not data:
                                 break
                             file.write(data)
-                    print(f"File '{file_name}' downloaded successfully.")
+                            print(f"File '{file_name}' downloaded successfully.")
                     continue
