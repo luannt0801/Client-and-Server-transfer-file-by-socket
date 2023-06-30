@@ -34,12 +34,12 @@ sudo python3 client.py
 2. Send command
 3. Receive data and save - not done
 
-**Protocol**
+<!-- **Protocol**
 
 |Byte+0|Byte+1|Byte+2|Byte+3|
 |------|------|------|------|
 |Content Type|ID|Check|Payload|
-
+ -->
 
 
 

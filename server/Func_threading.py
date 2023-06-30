@@ -32,28 +32,38 @@ def handle_client(server: socket.socket,):
 
     # start
     while True:
-        #list file
         request = server.recv(1024).decode()
         print(request)
         command, filename = request.split()
+        print(command)
+        print("\n")
+        print(filename)
+
         # list
         if request.startswith("list"):
             folder_path = request.split("list")[1].strip()
             print(folder_path)
-            files = os.listdir(folder_path)
-            file_list = ' '.join(files)
-            print(file_list)
-            send_message(server, file_list.encode())
+            # check folder exists
+            if not os.path.exists(folder_path):
+                error_message = f"Folder '{folder_path}' does not exist."
+                send_message(server, error_message.encode())
+            else:
+                files = os.listdir(folder_path)
+                file_list = '   '.join(files)
+                print(file_list)
+                send_message(server, file_list.encode())
 
-        # #download
-        # elif command == "download":
-        #     file_name = filename
-        #     if os.path.isfile(file_name):
-        #         server.send('OK'.encode())
-        #         with open(file_name, 'rb') as file:
-        #             data = file.read(1024)
-        #             while data:
-        #                 server.send(data)
-        #                 data = file.read(1024)
-        #     else:
-        #         server.send('File not found'.encode())
+        if command == 'download':
+            if os.path.isfile(filename):
+                send_message(server, 'OK'.encode())
+                with open(filename, 'rb') as file:
+                    data = file.read(1024)
+                    while data:
+                        server.send(data)
+                        data = file.read(1024)
+                print(f"File '{filename}' sent successfully.")
+            else:
+                send_message(server, 'File not found'.encode())
+                print("File not found on the server.")
+
+

@@ -33,31 +33,37 @@ if __name__ == '__main__':
         # command input
         command = input("Enter command: ")
         if not command:
-            break        
-        send_message(Client, command.encode())
+            break
+        else:
+            send_message(Client, command.encode())
 
-        # receive package
-        package = Client.recv(1024).decode()
-        print(package)
+            # split command
+            request, file_name = command.split(" ")   
+            print(request + " " + file_name)     
 
-        # # download
-        # if package == 'OK':
-        #     file_name = command.split()[1]
-        #     download_dir = 'download'
+            # list
+            if request == 'list':
+                print("List file "+ file_name + ":")
+                package = Client.recv(1024).decode()
+                print(package)
 
-        #     if not os.path.exists(download_dir):
-        #         os.makedirs(download_dir)
+            # download
+            if request == 'download':
+                package = Client.recv(1024).decode()
+                if package == 'OK': # server send "OK" to confirm file exist
+                    download_dir = input("Download to: ")
 
-        #         file_path = os.path.join(download_dir, file_name)
-        #         with open(file_path, 'wb') as file:
-        #             while True:
-        #                 data = Client.recv(1024)
-        #                 if not data:
-        #                     break
-        #                 file.write(data)
-        #                 print(f"File '{file_name}' downloaded successfully.")
-        #     else:
-        #         print("File not found on the server.")
+                    if not os.path.exists(download_dir):
+                        os.makedirs(download_dir)
+                    else:
+                        print("Folder already exists!")
 
-
-
+                    file_path = os.path.join(download_dir, file_name)
+                    with open(file_path, 'wb') as file:
+                        while True:
+                            data = Client.recv(1024)
+                            if not data:
+                                break
+                            file.write(data)
+                    print(f"File '{file_name}' downloaded successfully.")
+                    continue
