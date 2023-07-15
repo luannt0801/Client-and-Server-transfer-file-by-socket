@@ -5,40 +5,17 @@ from _thread import *
 import threading
 from message_handle import MessageHandle
 import ssl
+import keyboard
+
+from func_handle_data import *
 
 from send import send_message
 
 HOST = 'localhost'
 PORT = 8000
 CERTIFICATE_FILE = 'client.crt'
+socket_lock = threading.Lock()
 
-def receive_file(sock, file_name, save_dir):
-    # file_received = sock.recv(65536).decode()  # Nhận tên file từ client
-    # print(file_received)
-    # save_path = os.path.join(save_dir, file_received)
-    save_path = os.path.join(save_dir, file_name)
-    with open(save_path, 'wb') as file:
-        while True:
-            data = sock.recv(1024)
-            if not data:
-                break
-            file.write(data)
-
-def receive_folder(sock, folder_name, save_dir):
-    # folder_info = sock.recv(1024).decode()  # Nhận thông tin thư mục từ client
-    # print(folder_info)
-    # folder_name = folder_info.split()[1]
-    # folder_path = os.path.join(save_dir, folder_name)
-    # os.makedirs(folder_path, exist_ok=True)
-    folder_path = os.path.join(save_dir, folder_name)
-    os.makedirs(folder_path, exist_ok=True)
-    # Nhận tất cả các file trong thư mục từ client
-    while True:
-        receive_file(sock,folder_name ,folder_path)
-        # Kiểm tra xem còn file nữa không
-        data = sock.recv(1024)
-        if not data:
-            break
 
 if __name__ == '__main__':
     Client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -77,19 +54,12 @@ if __name__ == '__main__':
                 
             if request == "download":
                 check_file = Client.recv(1024).decode()
-                print(check_file) # test
                 check_done = "OK"
                 send_message(Client, check_done.encode())
-                # create folder save
-                download_dir = input("Download to: ")
-                if not os.path.exists(download_dir):
-                    os.makedirs(download_dir)
-                else:
-                    print("Folder already exists!")
                 # save file
                 if check_file == 'file':
-                    receive_file(Client, file_name, download_dir)
+                    receive_file(Client, file_name)
                 if check_file == 'folder':
-                    receive_folder(Client, file_name, download_dir)
+                    receive_folder(Client, file_name)
                 # if check_file == 'not found'
 

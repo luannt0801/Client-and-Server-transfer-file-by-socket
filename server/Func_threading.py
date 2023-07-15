@@ -15,26 +15,42 @@ def send_file_list():
     return file_list
 
 def send_folder(sock, folder_path):
-    # # Gửi tên thư mục đến máy chủ
-    # folder_name = os.path.basename(folder_path)
-    # sock.send(folder_name.encode())
+    try:
+        files_in_folder = os.listdir(folder_path)
+        num_files = len(files_in_folder)
+        print(num_files)
+        sock.send(str(num_files).encode())
+        test = sock.recv(1024)
+        print(test.decode())
+        for root, _, files in os.walk(folder_path):
+            for file_name in files:
+                file_path = os.path.join(root, file_name)
+                print(file_path)
+                sock.send(file_name.encode())
+                sock.recv(1024)
+                with open(file_path, 'rb') as file:
+                    data = file.read(1024)
+                    len_file = len(data) # send lenght of file
+                    send_message(sock, (str(len_file)).encode())
+                    sock.recv(1024)
+                    while data:
+                        sock.send(data)
+                        data = file.read(1024)
+    except Exception as e:
+        print("Error occurred while receiving and writing data:", str(e))
 
-    # Lặp qua tất cả các tệp trong thư mục và gửi chúng tới máy chủ
-    for file_name in os.listdir(folder_path):
-        file_path = os.path.join(folder_path, file_name)
-        if os.path.isfile(file_path):
-            send_file(sock, file_path)
-
-# Hàm gửi tệp từ máy khách tới máy chủ
 def send_file(sock, file_path):
-    # # Gửi tên tệp đến máy chủ
-    # file_name = os.path.basename(file_path)
-    # sock.send(file_name.encode())
-
-    # Gửi nội dung tệp tới máy chủ
-    with open(file_path, 'rb') as file:
-        for chunk in iter(lambda: file.read(1024), b''):
-            sock.send(chunk)
+    try:
+        with open(file_path, 'rb') as file:
+            data = file.read(1024)
+            len_file = len(data) # send lenght of file
+            send_message(sock, (str(len_file)).encode())
+            sock.recv(1024)
+            while data:
+                sock.send(data)
+                data = file.read(1024)
+    except Exception as e:
+        print("Error occurred while receiving and writing data:", str(e))
 
 def check_file_type(file_path):
     if os.path.isfile(file_path):
@@ -51,7 +67,7 @@ def handle_client(server: socket.socket,):
     # secure_socket = context.wrap_socket(server, server_side=True)
 
     # welcome
-    msg0 = "--- Welcome to server ---\nDownload/Upload + file name | cd & cd .. to move\nserver:"
+    msg0 = "--- Welcome to server ---\nDownload/Upload + file name | ls\nserver:"
     server.send(msg0.encode())
     start_msg = server.recv(1024)
     # time.sleep(5)
