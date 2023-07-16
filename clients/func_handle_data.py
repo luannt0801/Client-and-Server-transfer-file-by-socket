@@ -60,10 +60,18 @@ def receive_folder(client, folder_name):
     except Exception as e:
         print("Error occurred while receiving and writing data:", str(e))
 
+def send_file_list():
+    files = os.listdir('.')
+    file_list = '     '.join(files)
+    return file_list
+
 def menu():
-    print("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+")
-    print("+ 1. List files in server directory (ls <file_name>)  +")
-    print("+ 2. Download file (download <file_name>)             +")
-    print("+ 3. Upload file (upload <file_name>)                 +")
-    print("+ 4. Exit (exit server)                               +")
-    print("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+")
+    print("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+")
+    print("+ 1. List files in server directory (ls <folder_name>)          +")
+    print("+    ls server : to see all file in server                      +")
+    print("+    ls client : to see all file in client                      +")
+    print("+    ls <folder_name> : to see all file in folder in server     +")
+    print("+ 2. Download file (download <file_name>)                       +")
+    print("+ 3. Upload file (upload <file_name>)                           +")
+    print("+ 4. Exit (exit server)                                         +")
+    print("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+")

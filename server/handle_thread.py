@@ -30,14 +30,16 @@ def handle_client(server: socket.socket,):
                 print(msg)
                 send_message(server, str(msg).encode())
             else:
-                if os.path.exists(folder_path):
+                if folder_path == "server":
+                    server_list = send_file_list()
+                    server.send(server_list.encode())
+                elif folder_path == "client":
+                    server.send("OK".encode())
+                elif folder_path != "client" or folder_path != "server":
                     files = os.listdir(folder_path)
                     file_list = ' '.join(files)
                     print(file_list)
                     send_message(server, file_list.encode())
-                else:
-                    msg = f"The folder '{folder_path}' does not exist on the server."
-                    send_message(server, str(msg).encode())
 
         # down load
         if command == "download":

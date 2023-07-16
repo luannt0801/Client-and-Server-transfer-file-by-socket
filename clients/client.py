@@ -48,8 +48,18 @@ if __name__ == '__main__':
             # list
             if request == "ls":
                 print(file_name + ":")
-                package = Client.recv(1024).decode()
-                print(package)
+                if file_name == "client":
+                    Client.recv(1024).decode()
+                    print(send_file_list())
+                    continue
+                elif file_name == "server":
+                    package = Client.recv(1024).decode()
+                    print(package)
+                    continue
+                elif file_name != "client" or file_name != "server":
+                    package = Client.recv(1024).decode()
+                    print(package)
+                    continue
 
             # download  
             if request == "download":
