@@ -7,7 +7,7 @@ from func_send import *
 
 def handle_client(server: socket.socket,):
     # welcome
-    msg0 = "--- Welcome to server ---\nDownload/Upload + file name | ls\nserver:"
+    msg0 = "--- Welcome to SSL server ---\nserver:"
     server.send(msg0.encode())
     start_msg = server.recv(1024)
     # time.sleep(5)
@@ -25,10 +25,19 @@ def handle_client(server: socket.socket,):
         if request.startswith("ls"):
             folder_path = request.split("ls")[1].strip()
             print(folder_path)
-            files = os.listdir(folder_path)
-            file_list = ' '.join(files)
-            print(file_list)
-            send_message(server, file_list.encode())
+            if not folder_path:
+                msg = "Invalid folder path."
+                print(msg)
+                send_message(server, str(msg).encode())
+            else:
+                if os.path.exists(folder_path):
+                    files = os.listdir(folder_path)
+                    file_list = ' '.join(files)
+                    print(file_list)
+                    send_message(server, file_list.encode())
+                else:
+                    msg = f"The folder '{folder_path}' does not exist on the server."
+                    send_message(server, str(msg).encode())
 
         # down load
         if command == "download":

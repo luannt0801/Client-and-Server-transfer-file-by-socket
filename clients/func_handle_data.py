@@ -59,3 +59,11 @@ def receive_folder(client, folder_name):
 
     except Exception as e:
         print("Error occurred while receiving and writing data:", str(e))
+
+def menu():
+    print("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+")
+    print("+ 1. List files in server directory (ls <file_name>)  +")
+    print("+ 2. Download file (download <file_name>)             +")
+    print("+ 3. Upload file (upload <file_name>)                 +")
+    print("+ 4. Exit (exit server)                               +")
+    print("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+")

@@ -27,6 +27,7 @@ if __name__ == '__main__':
     Client.send(star_msg.encode())
     data = Client.recv(1024)
     print(data.decode())
+    menu()
 
     while True:
 
@@ -38,15 +39,19 @@ if __name__ == '__main__':
             send_message(Client, command.encode())
 
             # split command
-            request, file_name = command.split(" ")   
-            print(request + " " + file_name)     
+            if len(command.split(" ")) == 2:
+                request, file_name = command.split(" ")   
+            else:
+                request =""
+                file_name =""
 
             # list
             if request == "ls":
-                print("List file "+ file_name + ":")
+                print(file_name + ":")
                 package = Client.recv(1024).decode()
                 print(package)
-                
+
+            # download  
             if request == "download":
                 check_file = Client.recv(1024).decode()
                 check_done = "OK"
@@ -58,3 +63,9 @@ if __name__ == '__main__':
                     receive_folder(Client, file_name)
                 # if check_file == 'not found'
 
+            # exit
+            if request == "exit":
+                if file_name == "server":
+                    break
+                else:
+                    print("ERROR COMMAND")
