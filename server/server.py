@@ -31,12 +31,12 @@ if __name__ == '__main__':
     context = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
     context.load_cert_chain(certfile=CERTIFICATE_FILE, keyfile=PRIVATE_KEY_FILE)
     secure_socket = context.wrap_socket(server_socket, server_side=True)
-    print("Server đã sẵn sàng lắng nghe...")
+    print("Server is ready to listenning . . .")
 
     while True:
         client_socket, addr = secure_socket.accept()
         clients.append(addr)
-        print("Đã kết nối từ:", addr)
+        print("Connected:", addr)
 
         client_thread = threading.Thread(target=handle_client, args=(client_socket,))
         client_thread.start()
