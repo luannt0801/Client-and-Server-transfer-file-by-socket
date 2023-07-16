@@ -1,11 +1,7 @@
 import socket
-import os
-import time
 from _thread import *
 import threading
-from message_handle import MessageHandle
 import ssl
-import keyboard
 
 from func_handle_data import *
 
@@ -18,13 +14,12 @@ socket_lock = threading.Lock()
 
 
 if __name__ == '__main__':
-    Client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    Client.connect((HOST, PORT))
+    nonsercue_Client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-    # context = ssl.create_default_context(ssl.Purpose.SERVER_AUTH)
-    # context.load_verify_locations(cafile=CERTIFICATE_FILE)
-    # secure_socket = context.wrap_socket(Client, server_hostname=HOST)
-    # secure_socket.connect((HOST, PORT))
+    context = ssl.create_default_context(ssl.Purpose.SERVER_AUTH)
+    context.load_verify_locations(cafile=CERTIFICATE_FILE)
+    Client = context.wrap_socket(nonsercue_Client, server_hostname=HOST)
+    Client.connect((HOST, PORT))
     
     mess0 = Client.recv(1024).decode()
     print(mess0)
