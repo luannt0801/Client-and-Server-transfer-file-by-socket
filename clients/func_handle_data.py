@@ -1,6 +1,66 @@
 import os
 import socket
 import keyboard
+from send import *
+
+def check_file_type(file_path):
+    if os.path.isfile(file_path):
+        return "file"
+    elif os.path.isdir(file_path):
+        return "folder"
+    else:
+        return "not_found"
+
+def send_folder(sock, folder_path):
+    try:
+        # send dir
+        download_dir = input("save as: ")
+        sock.send(download_dir.encode())
+        # OK
+        sock.recv(1024)
+        # send len file
+        files_in_folder = os.listdir(folder_path)
+        num_files = len(files_in_folder)
+        sock.send(str(num_files).encode())
+        # OK
+        sock.recv(1024)
+        # start send
+        for root, _, files in os.walk(folder_path):
+            for file_name in files:
+                file_path = os.path.join(root, file_name)
+                print(file_path)
+                sock.send(file_name.encode())
+                sock.recv(1024)
+                with open(file_path, 'rb') as file:
+                    data = file.read(1024)
+                    len_file = len(data) # send lenght of file
+                    send_message(sock, (str(len_file)).encode())
+                    sock.recv(1024)
+                    bytes = 0
+                    while bytes < len_file:
+                        sock.send(data)
+                        data = file.read(1024)
+                        bytes +=1
+    except Exception as e:
+        print("Error occurred while receiving and writing data:", str(e))
+
+def send_file(sock, file_path):
+    try:
+        download_dir = input("Upload to: ")
+        sock.send(download_dir.encode())
+        sock.recv(1024)
+        with open(file_path, 'rb') as file:
+            data = file.read(1024)
+            len_file = len(data) # send lenght of file
+            send_message(sock, (str(len_file)).encode())
+            sock.recv(1024)
+            bytes = 0
+            while bytes < len_file:
+                sock.send(data)
+                data = file.read(1024)
+                bytes +=1
+    except Exception as e:
+        print("Error occurred while receiving and writing data:", str(e))
 
 def receive_file(client:socket, file_name):
     download_dir = input("Download to: ")

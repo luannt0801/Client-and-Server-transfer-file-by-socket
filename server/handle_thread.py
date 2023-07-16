@@ -19,7 +19,11 @@ def handle_client(server: socket.socket,):
     while True:
         request = server.recv(1024).decode()
         print(request)
-        command, filename = request.split()
+        if len(request.split(" ")) == 2:
+                command, filename = request.split(" ")   
+        else:
+            command =""
+            filename =""
 
         # list
         if request.startswith("ls"):
@@ -50,6 +54,16 @@ def handle_client(server: socket.socket,):
                 if file_check == "file":
                     send_file(server, filename)
                 if file_check == "folder":
-                    send_folder(server, filename)            
+                    send_folder(server, filename)   
+
+        # upload
+        if command == "upload":
+            file_check = server.recv(1024).decode()
+            print(file_check)
+            server.send("OK".encode())
+            if file_check == "file":
+                receive_file(server, filename)
+            if file_check == "folder":
+                receive_folder(server, filename)
 
 

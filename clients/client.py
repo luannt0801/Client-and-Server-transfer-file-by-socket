@@ -73,6 +73,17 @@ if __name__ == '__main__':
                     receive_folder(Client, file_name)
                 # if check_file == 'not found'
 
+            # upload
+            if request == "upload":
+                file_check = check_file_type(file_name)
+                Client.send(file_check.encode())
+                # OK
+                Client.recv(1024)
+                if file_check == "file":
+                    send_file(Client, file_name)
+                if file_check == "folder":
+                    send_folder(Client, file_name)
+
             # exit
             if request == "exit":
                 if file_name == "server":

@@ -47,6 +47,65 @@ def send_file(sock, file_path):
     except Exception as e:
         print("Error occurred while receiving and writing data:", str(e))
 
+def receive_file(client:socket, file_name):
+    download_dir = client.recv(1024).decode()
+    if not os.path.exists(download_dir):
+        os.makedirs(download_dir)
+    else:
+        print("Folder already exists!")
+    save_path = os.path.join(download_dir, file_name)
+    client.send("OK".encode())
+    file_length = int(client.recv(1024).decode())
+    print(file_length)
+    client.send("OK".encode())
+
+    received_bytes = 0
+
+    with open(save_path, 'wb') as file:
+        while received_bytes < file_length:
+            data = client.recv(1024)
+            if not data:
+                break
+            file.write(data)
+            received_bytes += len(data)
+
+def receive_folder(client, folder_name):
+    try:
+        # os.makedirs(folder_name, exist_ok=True) # create a folder
+        download_dir = client.recv(1024).decode()
+        if not os.path.exists(download_dir):
+            os.makedirs(download_dir)
+        else:
+            print("Folder already exists!")
+        client.send("OK".encode())
+        msg = client.recv(1024).decode()
+        num_files = int(msg)
+        num_files_received = 0
+        client.send("OK".encode())
+        while num_files_received < num_files:
+            # receive name
+            name_file_rcv = client.recv(1024).decode()
+            # send OK
+            client.send("ok".encode())
+            # receive size
+            file_size = int(client.recv(1024).decode())
+            # send OK
+            client.send("ok".encode())
+            # save
+            file_path = os.path.join(download_dir, name_file_rcv)
+            with open(file_path, 'wb') as file:
+                total_received = 0
+                while total_received < file_size:
+                    data = client.recv(1024)
+                    if not data:
+                        break
+                    file.write(data)
+                    total_received += len(data)
+            num_files_received += 1
+
+    except Exception as e:
+        print("Error occurred while receiving and writing data:", str(e))
+
 def check_file_type(file_path):
     if os.path.isfile(file_path):
         return "file"
