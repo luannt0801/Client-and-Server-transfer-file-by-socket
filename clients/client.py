@@ -47,7 +47,6 @@ if __name__ == '__main__':
 
             # list
             if request == "ls":
-                print(file_name + ":")
                 if file_name == "client":
                     Client.recv(1024).decode()
                     print(send_file_list())
