@@ -33,3 +33,14 @@ sudo python3 client.py
 1. Connect to server
 2. Send command
 3. Receive data and save
+
+**Create SSL**
+1. Create key:
+```
+openssl genpkey -algorithm RSA -out server.key
+```
+2. Create certificate:
+```
+openssl req -new -key server.key -out server.csr
+openssl x509 -req -days 365 -in server.csr -signkey server.key -out server.crt
+```
