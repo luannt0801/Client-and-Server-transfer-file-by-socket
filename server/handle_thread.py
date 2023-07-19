@@ -40,10 +40,8 @@ def handle_client(server: socket.socket,):
                 elif folder_path == "client":
                     server.send("OK".encode())
                 elif folder_path != "client" or folder_path != "server":
-                    files = os.listdir(folder_path)
-                    file_list = ' '.join(files)
-                    print(file_list)
-                    send_message(server, file_list.encode())
+                    error = "File/Folder is not exist!!"
+                    send_message(server, error.encode())
 
         # down load
         if command == "download":
@@ -65,5 +63,3 @@ def handle_client(server: socket.socket,):
                 receive_file(server, filename)
             if file_check == "folder":
                 receive_folder(server, filename)
-
-

@@ -89,3 +89,7 @@ if __name__ == '__main__':
                     break
                 else:
                     print("ERROR COMMAND")
+            
+            if request not in ["ls", "download", "upload", "exit"]:
+                print("ERROR COMMAND!!")
+                continue
